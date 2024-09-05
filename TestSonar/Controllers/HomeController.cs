@@ -10,6 +10,7 @@ namespace TestSonar.Controllers
     {
         public ActionResult Index()
         {
+            var testSonar = "Empty project sonar test";
             return View();
         }
 
