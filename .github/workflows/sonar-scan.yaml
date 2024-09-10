@@ -75,7 +75,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.3.3 
         with:
           vswhere-path: 'C:\Program Files (x86)\Microsoft Visual Studio\Installer'  
-          vs-version : 2019
+          vs-version : 16.11.2.50704
           msbuild-architecture: x64
 
       - name: Build and analyze
