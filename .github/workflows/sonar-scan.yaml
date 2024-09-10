@@ -41,5 +41,5 @@ jobs:
         run: |
           "C:\Program Files\Sonar\sonar-scanner-8.0.1.97834-net-framework\SonarScanner.MSBuild.exe"  begin /k:"Test-organization-for-sonnar_TestSonar_7140f900-8419-42f6-a127-3c04c09d07e6" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
      
-          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MsBuild.exe" /t:Rebuild
+        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MsBuild.exe" /t:Rebuild
           "C:\Program Files\Sonar\sonar-scanner-8.0.1.97834-net-framework\SonarScanner.MSBuild.exe" end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
