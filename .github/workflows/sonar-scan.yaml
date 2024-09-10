@@ -70,13 +70,10 @@ jobs:
 
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
-      - name: Add msbuild to PATH
 
-        uses: microsoft/setup-msbuild@v1.3.3 
-        with:
-          vswhere-path: 'C:\Program Files (x86)\Microsoft Visual Studio\Installer'  
-          vs-version : 16.11.2.50704
-          msbuild-architecture: x64
+      - name: Setup MSBuild.exe
+        uses: warrenbuckley/Setup-MSBuild@v1
+  
       - name: Build and analyze
 
         shell: powershell
