@@ -77,7 +77,6 @@ jobs:
           vswhere-path: 'C:\Program Files (x86)\Microsoft Visual Studio\Installer'  
           vs-version : 16.11.2.50704
           msbuild-architecture: x64
-
       - name: Build and analyze
 
         shell: powershell
