@@ -1,52 +1,87 @@
-name: "build-test-dev"
+name: Build
+
 on:
-  pull_request:
-    branches:
-      - dev
-    paths-ignore:
-      - '*.md'
+
   push:
+
     branches:
-      - dev
-  
+
+      - dev # or the name of your main branch
 
 jobs:
+
   build:
+
+    name: Build
+
     runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v4
 
-    - name: Setup MSBuild (vswhere-path)
-      id: setup_msbuild_explicit
-      uses: ./
-      with:
-        vswhere-path: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin
+      - name: Set up JDK 17
 
-    - name: Setup MSBuild (PATH)
-      id: setup_msbuild_path
-      uses: ./
+        uses: actions/setup-java@v1
 
-    - name: Setup MSBuild (fallback)
-      id: setup_msbuild_fallback
-      uses: ./
-      env:
-        PATH: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin
+        with:
 
-    - name: Setup MSBuild (x64)
-      if: always()
-      id: setup_msbuild_path_x64
-      uses: ./
-      with:
-        vs-prerelease: true
-        msbuild-architecture: 'x64'
+          java-version: 17
 
+      - uses: actions/checkout@v2
 
-    - name: echo msbuild path
-      run: |
-        echo "vswhere-path: ${{ steps.setup_msbuild_explicit.outputs.msbuildPath }}"
-        echo "PATH: ${{ steps.setup_msbuild_path.outputs.msbuildPath }}"
-        echo "ARM PATH: ${{ steps.setup_msbuild_path_x64.outputs.msbuildPath }}"
-        echo "Fallback: ${{ steps.setup_msbuild_fallback.outputs.msbuildPath }}"
+        with:
 
-    - name: echo MSBuild
-      run: msbuild -version
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Cache SonarQube packages
+
+        uses: actions/cache@v1
+
+        with:
+
+          path: ~\sonar\cache
+
+          key: ${{ runner.os }}-sonar
+
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarQube scanner
+
+        id: cache-sonar-scanner
+
+        uses: actions/cache@v1
+
+        with:
+
+          path: .\.sonar\scanner
+
+          key: ${{ runner.os }}-sonar-scanner
+
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      - name: Install SonarQube scanner
+
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+
+        shell: powershell
+
+        run: |
+
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+
+      - name: Add msbuild to PATH
+
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Build and analyze
+
+        shell: powershell
+
+        run: |
+
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"example" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+
+          dotnet build
+
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
