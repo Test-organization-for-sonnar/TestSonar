@@ -74,7 +74,7 @@ jobs:
 
         uses: microsoft/setup-msbuild@v2     
         with:
-          vswhere-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin'
+          vswhere-path: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MsBuild.exe'
       - name: Build and analyze
 
         shell: powershell
