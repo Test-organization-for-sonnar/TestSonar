@@ -72,7 +72,7 @@ jobs:
 
       - name: Add msbuild to PATH
 
-        uses: microsoft/setup-msbuild@v1.0.1     
+        uses: microsoft/setup-msbuild@v16.11.2.50704    
         with:
           vswhere-path: 'C:\Program Files (x86)\Microsoft Visual Studio\Installer'  
 
