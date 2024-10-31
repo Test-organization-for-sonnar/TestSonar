@@ -38,7 +38,7 @@ jobs:
       - name: Setup Nuget
         uses: Nuget/setup-nuget@v1.0.5
       - name: Restore nuget packages
-        run: nuget restore **.csproj
+        run: nuget restore **.sln
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
       - name: Build and analyze
