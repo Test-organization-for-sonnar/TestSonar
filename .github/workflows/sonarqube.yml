@@ -53,7 +53,7 @@ jobs:
         shell: powershell
         run: |
           SonarScanner.MSBuild.exe begin /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="http://localhost:9000"
-          MSBuild.exe <path to project file or .sln file> /t:Rebuild
+          MSBuild.exe /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /t:Rebuild
           SonarScanner.MSBuild.exe end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           
 
