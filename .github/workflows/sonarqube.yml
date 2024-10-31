@@ -43,8 +43,8 @@ jobs:
       - name: Restore NuGet packages for XSLT processing
         uses: IT-Service/restore-nuget-packages@v1
         with:
-          packages-config-path: TestSonar/TestSonar/packages.config
-          packages-directory-path: TestSonar/TestSonar
+          packages-config-path: TestSonar/packages.config
+          packages-directory-path: TestSonar
 
 
         
