@@ -39,13 +39,6 @@ jobs:
   
       - name: Setup MSBuild path  
         uses: microsoft/setup-msbuild@v1.0.2  
-  
-      - name: Setup NuGet  
-        uses: NuGet/setup-nuget@v1.0.5  
-  
-      - name: Restore NuGet packages  
-        run: nuget restore -ConfigFile 'packages.config' 
-
         
       - name: Build and analyze
 
@@ -54,3 +47,6 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
           msbuild /t:Rebuild
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+          SonarScanner.MSBuild.exe begin /k:"project-key" /d:sonar.token="<token>" /d:sonar.host.url="http://localhost:9000"
+
