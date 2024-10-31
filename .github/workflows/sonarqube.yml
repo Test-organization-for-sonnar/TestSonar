@@ -35,7 +35,10 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-
+      - name: Setup Nuget
+        uses: Nuget/setup-nuget@v1.0.5
+      - name: Restore nuget packages
+        run: nuget restore **.csproj
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
       - name: Build and analyze
