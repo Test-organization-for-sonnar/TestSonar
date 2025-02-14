@@ -54,6 +54,6 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-          '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"' /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /t:Rebuild
+          MSBuild.exe /t:Rebuild /p:TargetFramework=net48
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
