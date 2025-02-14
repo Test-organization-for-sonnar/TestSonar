@@ -11,6 +11,8 @@ namespace TestSonar.Controllers
         public ActionResult Index()
         {
             var d = "test";
+
+            ///for sonar
             return View();
         }
 
