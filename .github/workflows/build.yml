@@ -41,6 +41,6 @@ jobs:
       - name: Build and analyze
         shell: powershell
         run: |
-          '"C:\Program Files\Sonar\sonar-scanner-8.0.1.97834-net-framework\SonarScanner.MSBuild.exe" begin /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /t:Rebuild
+          '"C:\Program Files\Sonar\sonar-scanner-8.0.1.97834-net-framework\SonarScanner.MSBuild.exe" begin /k:"Test-organization-for-sonnar_TestSonar_sqp_0b8f9dabc844251ab7ea05399221cc6545e16613" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" /k:"Test-organization-for-sonnar_TestSonar_sqp_0b8f9dabc844251ab7ea05399221cc6545e16613" /t:Rebuild
           "C:\Program Files\Sonar\sonar-scanner-8.0.1.97834-net-framework\SonarScanner.MSBuild.exe" end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"'
