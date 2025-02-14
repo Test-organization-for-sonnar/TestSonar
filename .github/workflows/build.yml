@@ -1,85 +1,46 @@
-code:
-name: SonarQube-CI
+name: Build
 
 on:
-push:
-branches:
-- master
-pull_request:
-types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
+
 
 jobs:
-sonar-scanner-dotnetframework:
-runs-on: self-hosted
-
-steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-    - name: Set up JDK 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-  uses: actions/setup-java@v1
-  
-  with:
-    java-version: 17
-
-- uses: actions/checkout@v2
-  with:
-    fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-
-- name: Installing Sonar scanner MSBuild
-    if [ -d $instalation_dir ]; then ###      instalation_dir=~/SonarScannerCLI
-  run: |
-  shell:
-    mkdir -p $instalation_dir
-    fi
-- name: Download Sonar scanner
-  env:
-    SONAR_TOKEN: 
-    SONAR_HOST_URL: 
-  run: |
-   echo "########## INSTALLING SONAR SCANNER ##########"
-   printf "Downloading... "
-   wget -q https://github.com/SonarSource/sonar-scanner-msbuild/releases/download/5.7.2.50892/sonar-scanner-msbuild-5.7.2.50892-net46.zip
-   printf "Complete!\n"
-   unzip -q sonar-scanner-msbuild-5.7.2.50892-net46.zip
-   rm sonar-scanner-msbuild-5.7.2.50892-net46.zip
-   echo "Installing on "$instalation_dir
-   sudo mv sonar-scanner-msbuild-5.7.2.50892-net46 $instalation_dir
-   echo "Adding Sonar Scanner to PATH..."
-   echo 'export PATH="'$instalation_dir'/bin:$PATH"' >> ~/.bashrc
-   dotnet tool update dotnet-sonarscanner
-# - name: Cache SonarQube scanner
-#   id: cache-sonar-scanner
-#   uses: actions/cache@v1
-#   with:
-#     path: .\.sonar\scanner
-#     key: ${{ runner.os }}-sonar-scanner
-#     restore-keys: ${{ runner.os }}-sonar-scanner
-
-# - name: Install SonarQube scanner
-#   if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-#   shell: powershell
-#   run: |
-#     New-Item -Path .\.sonar\scanner -ItemType Directory
-#     dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner    
-
-- name: Setup MSBuild
-  uses: microsoft/setup-msbuild@v1.1
-
-- name: Setup Nuget
-  uses: nuget/setup-nuget@v1
-
-- name: Restore NuGet packages
-  run: nuget restore src/Episerver/Episerver.VIOC.sln
-
-- name: Build the Solution
-  env:
-    GITHUB_TOKEN: 
-  shell: powershell
-  run: |
-    $instalation_dir/'SonarScanner.MSBuild.exe begin /k:"" /d:sonar.login:"" /d:SONAR_HOST_URL:"${{ secrets.SONAR_HOST_URL }}"
-    MsBuild.exe /t:Rebuild
-    $instalation_dir/'SonarScanner.MSBuild.exe end /d:sonar.login="$"
+  build:
+    name: Build and analyze
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Cache SonarQube packages
+        uses: actions/cache@v1
+        with:
+          path: ~\.sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarQube scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v1
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarQube scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Build and analyze
+        shell: powershell
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"Test-organization-for-sonnar_TestSonar_098304cf-334a-475a-9d9a-153402416f3f" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          MsBuild.exe /t:Rebuild
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
